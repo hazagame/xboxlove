@@ -148,57 +148,57 @@ function xboxlove:update(dt)
   if _PLATFORM == "win32" then
 		-- Axes :
 		self.Axes.LeftX    = self.joystick:getAxis(1)
-		self.Axes.LeftY    = self.joystick:getAxis(2)
-		self.Axes.Triggers = self.joystick:getAxis(3)
-		self.Axes.RightX   = self.joystick:getAxis(5)
-		self.Axes.RightY   = self.joystick:getAxis(4)
-		if self.Axes.Triggers < 0 then 
-			self.Axes.RightTrigger = math.abs(self.Axes.Triggers)
-			self.Axes.LeftTrigger = 0
-		elseif self.Axes.Triggers > 0 then
-			self.Axes.LeftTrigger  = math.abs(self.Axes.Triggers)
-			self.Axes.RightTrigger = 0
-		else
-			self.Axes.RightTrigger = 0
-			self.Axes.LeftTrigger = 0
-		end
+		self.Axes.LeftY    = -self.joystick:getAxis(2)
+		self.Axes.RightX   = self.joystick:getAxis(3)
+		self.Axes.RightY   = -self.joystick:getAxis(4)
+		self.Axes.LeftTrigger  = (self.joystick:getAxis(5)+1)/2
+		self.Axes.RightTrigger = (self.joystick:getAxis(6)+1)/2
+		self.Axes.Triggers     = (self.joystick:getAxis(5)+1)/2 - (self.joystick:getAxis(6)+1)/2
 
-			-- Dpad :
-		local Dpad = self.joystick:getHat(1)
-		if Dpad == 'c' then
+		-- Dpad :
+		self.Dpad.Up    = self.joystick:isDown(0)
+		self.Dpad.Down  = self.joystick:isDown(1)
+		self.Dpad.Left  = self.joystick:isDown(2)
+		self.Dpad.Right = self.joystick:isDown(3)
+
+		self.Dpad.Direction = ''
+		if (not self.Dpad.Up) and (not self.Dpad.Down) and (not self.Dpad.Left) and (not self.Dpad.Right) then
+			self.Dpad.Direction = 'c'
 			self.Dpad.Centered = true
-			self.Dpad.Up       = false
-			self.Dpad.Down     = false
-			self.Dpad.Right    = false
-			self.Dpad.Left     = false
 		else
 			self.Dpad.Centered = false
-			if Dpad:find('d') then self.Dpad.Down  = true else self.Dpad.Down  = false end
-			if Dpad:find('r') then self.Dpad.Right = true else self.Dpad.Right = false end
-			if Dpad:find('u') then self.Dpad.Up    = true else self.Dpad.Up    = false end
-			if Dpad:find('l') then self.Dpad.Left  = true else self.Dpad.Left  = false end
-		end
-		self.Dpad.Direction = Dpad
+			if self.Dpad.Right then
+				self.Dpad.Direction = self.Dpad.Direction..'r'
+			elseif self.Dpad.Left then
+				self.Dpad.Direction = self.Dpad.Direction..'l'
+			end
 
-			-- Buttons
-		self.Buttons.A          = self.joystick:isDown(1)
-		self.Buttons.B          = self.joystick:isDown(2)
-		self.Buttons.X          = self.joystick:isDown(3)
-		self.Buttons.Y          = self.joystick:isDown(4)
-		self.Buttons.LB         = self.joystick:isDown(5)
-		self.Buttons.RB         = self.joystick:isDown(6)
-		self.Buttons.Back       = self.joystick:isDown(7)
-		self.Buttons.Start      = self.joystick:isDown(8)
-		self.Buttons.LeftStick  = self.joystick:isDown(9)
-		self.Buttons.RightStick = self.joystick:isDown(10)
-		self.Buttons.Home       = self.joystick:isDown(11)
+			if self.Dpad.Down then
+				self.Dpad.Direction = self.Dpad.Direction..'d'
+			elseif self.Dpad.Up then
+				self.Dpad.Direction = self.Dpad.Direction..'u'
+			end
+		end
+		
+		-- Buttons
+		self.Buttons.A          = self.joystick:isDown(10)
+		self.Buttons.B          = self.joystick:isDown(11)
+		self.Buttons.X          = self.joystick:isDown(12)
+		self.Buttons.Y          = self.joystick:isDown(13)
+		self.Buttons.LB         = self.joystick:isDown(8)
+		self.Buttons.RB         = self.joystick:isDown(9)
+		self.Buttons.Back       = self.joystick:isDown(5)
+		self.Buttons.Start      = self.joystick:isDown(4)
+		self.Buttons.LeftStick  = self.joystick:isDown(6)
+		self.Buttons.RightStick = self.joystick:isDown(7)
+		self.Buttons.Home       = self.joystick:isDown(14)
 
 		self.Buttons.LT = self.Axes.Triggers == 1
 		self.Buttons.RT = self.Axes.Triggers == -1
 
 -- UNIX
 	else
-			-- Axes
+		-- Axes
 		self.Axes.LeftX        = self.joystick:getAxis(1)
 		self.Axes.LeftY        = -self.joystick:getAxis(2)
 		self.Axes.RightX       = self.joystick:getAxis(4)
@@ -207,7 +207,7 @@ function xboxlove:update(dt)
 		self.Axes.RightTrigger = (self.joystick:getAxis(6)+1)/2
 		self.Axes.Triggers     = (self.joystick:getAxis(3)+1)/2 - (self.joystick:getAxis(6)+1)/2
 
-			-- Dpad
+		-- Dpad
 		self.Dpad.Up    = self.joystick:isDown(11)
 		self.Dpad.Down  = self.joystick:isDown(12)
 		self.Dpad.Left  = self.joystick:isDown(13)
@@ -232,7 +232,7 @@ function xboxlove:update(dt)
 			end
 		end
 
-			-- Buttons
+		-- Buttons
 		self.Buttons.A          = self.joystick:isDown(0)
 		self.Buttons.B          = self.joystick:isDown(1)
 		self.Buttons.X          = self.joystick:isDown(2)
@@ -250,7 +250,7 @@ function xboxlove:update(dt)
 
 	end
 	   
-	   -- Apply Deadzones
+	-- Apply Deadzones
 	local z = 0
 	
 
