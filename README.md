@@ -3,6 +3,12 @@ xboxlove
 
 Update of Love2d xboxlove library to 0.9.
 
+[Orignal Thread here ](http://love2d.org/forums/viewtopic.php?f=5&t=39984)
+
+####Basic Use Changes
+
+   - Constructor : xboxlove.create(joystick) joystick is an joystick object from love.joystick.getJoysticks()
+
 ####Updates
 
    - Compatiable with Love2d 0.9 new Joystick functionality.
